@@ -61,7 +61,7 @@ const Body = ({
       <div id="home" className="px-6 md:px-20 pt-16 md:pt-24 pb-12 md:pb-20">
         <div className="max-w-3xl mx-auto text-center md:text-left">
           <h1 className="font-bold text-5xl md:text-7xl leading-tight tracking-tight">
-            Premium Tech.<br className="hidden md:block" />Delivered Fast.
+            Saddam Tech.<br className="hidden md:block" />Delivered Fast.
           </h1>
           <p className="mt-6 text-lg md:text-xl text-blue-200">
             Curated collection of the best gadgets, laptops, and accessories.

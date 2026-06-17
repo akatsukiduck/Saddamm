@@ -3,7 +3,7 @@ const About = () => {
     <footer id="about" className="w-full bg-[#0a1224] text-white py-16 px-6 border-t border-white/10">
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-12">
-          <h2 className="text-4xl font-bold mb-4">TechForge Store</h2>
+          <h2 className="text-4xl font-bold mb-4">Saddam Tech Store</h2>
           <p className="text-lg text-gray-400 max-w-md mx-auto">
             Saddam Tech products with unmatched quality and customer support.
           </p>
