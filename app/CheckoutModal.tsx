@@ -24,37 +24,33 @@ const CheckoutModal = ({ isOpen, onClose, cart, onOrderComplete }: CheckoutModal
     e.preventDefault();
     setLoading(true);
 
-    const order = {
-      orderId: "TF-" + Date.now().toString().slice(-6),
-      customer: formData,
-      items: cart.map(item => `${item.quantity}x ${item.name} ($${item.price})`).join("\n"),
-      total: total,
-      date: new Date().toLocaleString(),
-    };
+    const orderItems = cart.map(item => 
+      `<div class="item"><strong>${item.quantity}x ${item.name}</strong> - $${item.price}</div>`
+    ).join("");
 
     try {
       await emailjs.send(
-        "service_qive53b",        // ← Change this
-        "template_77jkcjq",       // ← Change this
+        "service_r4bdmkm",           // ← Replace
+        "template_rw14kxp",          // ← Replace
         {
-          order_id: order.orderId,
+          order_id: "TF-" + Date.now().toString().slice(-6),
+          date: new Date().toLocaleString(),
           customer_name: formData.name,
           customer_email: formData.email,
           customer_phone: formData.phone,
           address: formData.address,
-          items: order.items,
+          items: orderItems,
           total: total,
-          date: order.date,
         },
-        "oJx23bydl82rAFxxC"         // ← Change this
+        "snBM326uazR8onfGJ"            // ← Replace
       );
 
-      alert(`✅ Order #${order.orderId} placed successfully!\n\nWe will contact you soon.`);
+      alert(`✅ Order placed successfully! We will contact you soon.`);
       onOrderComplete();
       onClose();
     } catch (error) {
-      console.error(error);
-      alert("❌ Failed to send order. Please try again.");
+      console.error("EmailJS Error:", error);
+      alert("❌ Failed to send order. Please check console.");
     } finally {
       setLoading(false);
     }
@@ -67,33 +63,32 @@ const CheckoutModal = ({ isOpen, onClose, cart, onOrderComplete }: CheckoutModal
       <div className="bg-[#0f172a] border border-white/20 rounded-3xl w-full max-w-lg">
         <div className="flex justify-between items-center p-6 border-b border-white/10">
           <h2 className="text-2xl font-bold">Checkout</h2>
-          <button onClick={onClose} className="text-gray-400 hover:text-white text-2xl">✕</button>
+          <button onClick={onClose} className="text-2xl text-gray-400 hover:text-white">✕</button>
         </div>
 
         <form onSubmit={handleSubmit} className="p-6 space-y-5">
-          {/* Form fields same as before */}
           <div>
             <label className="block text-sm mb-1">Full Name</label>
-            <input type="text" required value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} 
+            <input type="text" required value={formData.name} onChange={(e) => setFormData({...formData, name: e.target.value})} 
               className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3" placeholder="John Doe" />
           </div>
 
           <div>
-            <label className="block text-sm mb-1">Email Address</label>
-            <input type="email" required value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })} 
+            <label className="block text-sm mb-1">Email</label>
+            <input type="email" required value={formData.email} onChange={(e) => setFormData({...formData, email: e.target.value})} 
               className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3" placeholder="you@example.com" />
           </div>
 
           <div>
-            <label className="block text-sm mb-1">Phone Number</label>
-            <input type="tel" required value={formData.phone} onChange={(e) => setFormData({ ...formData, phone: e.target.value })} 
-              className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3" placeholder="+212 612 345 678" />
+            <label className="block text-sm mb-1">Phone</label>
+            <input type="tel" required value={formData.phone} onChange={(e) => setFormData({...formData, phone: e.target.value})} 
+              className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3" placeholder="+212 612345678" />
           </div>
 
           <div>
             <label className="block text-sm mb-1">Delivery Address</label>
-            <textarea required value={formData.address} onChange={(e) => setFormData({ ...formData, address: e.target.value })} 
-              className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 h-24" placeholder="123 Example Street, City" />
+            <textarea required value={formData.address} onChange={(e) => setFormData({...formData, address: e.target.value})} 
+              className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 h-24" placeholder="Your full address" />
           </div>
 
           <div className="pt-4 border-t border-white/10">
@@ -104,7 +99,7 @@ const CheckoutModal = ({ isOpen, onClose, cart, onOrderComplete }: CheckoutModal
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-green-600 hover:bg-green-500 py-4 rounded-2xl text-lg font-semibold transition disabled:opacity-70"
+              className="w-full bg-green-600 hover:bg-green-500 py-4 rounded-2xl text-lg font-semibold disabled:opacity-70"
             >
               {loading ? "Sending Order..." : "Place Order"}
             </button>

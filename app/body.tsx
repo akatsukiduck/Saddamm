@@ -53,8 +53,6 @@ const Body = ({
     setCart([]);
     setIsCheckoutOpen(false);
   };
-
-  // ================== RETURN ==================
   return (
     <>
       {/* HERO */}
@@ -64,7 +62,7 @@ const Body = ({
             Saddam Tech.<br className="hidden md:block" />Delivered Fast.
           </h1>
           <p className="mt-6 text-lg md:text-xl text-blue-200">
-            Curated collection of the best gadgets, laptops, and accessories.
+            Curated collection of the best Phones, laptops, and accessories.
           </p>
           <a
             href="#shop"
