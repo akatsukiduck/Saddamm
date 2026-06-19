@@ -27,6 +27,18 @@ const Products = ({ searchTerm, onAddToCart }: {
     }
   }, []);
 
+  useEffect(() => {
+    if (selectedProduct) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [selectedProduct]);
+
   const filteredProducts = products
     .filter((p) => selectedCategory === "All" || p.category === selectedCategory)
     .filter((p) => p.name.toLowerCase().includes(searchTerm.toLowerCase()));
@@ -41,7 +53,6 @@ const Products = ({ searchTerm, onAddToCart }: {
     setCurrentImageIndex(0);
   };
 
-  // Get all images (support both old single image and new multiple images)
   const getAllImages = (product: Product) => {
     if (Array.isArray(product.images) && product.images.length > 0) {
       return product.images;
