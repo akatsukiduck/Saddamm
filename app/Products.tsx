@@ -7,7 +7,7 @@ interface Product {
   price: number;
   image: string;
   category: string;
-  images?: string[];        // Support multiple images
+  images?: string[];        // Multiple images
   description?: string;
 }
 
@@ -41,16 +41,22 @@ const Products = ({ searchTerm, onAddToCart }: {
     setCurrentImageIndex(0);
   };
 
-  const nextImage = () => {
-    if (selectedProduct?.images && selectedProduct.images.length > 1) {
-      setCurrentImageIndex((prev) => (prev + 1) % selectedProduct.images!.length);
+  // Get all images (support both old single image and new multiple images)
+  const getAllImages = (product: Product) => {
+    if (product.images && product.images.length > 0) {
+      return product.images;
     }
+    return [product.image];
+  };
+
+  const currentImages = selectedProduct ? getAllImages(selectedProduct) : [];
+
+  const nextImage = () => {
+    setCurrentImageIndex((prev) => (prev + 1) % currentImages.length);
   };
 
   const prevImage = () => {
-    if (selectedProduct?.images && selectedProduct.images.length > 1) {
-      setCurrentImageIndex((prev) => (prev - 1 + selectedProduct.images!.length) % selectedProduct.images!.length);
-    }
+    setCurrentImageIndex((prev) => (prev - 1 + currentImages.length) % currentImages.length);
   };
 
   return (
@@ -106,60 +112,77 @@ const Products = ({ searchTerm, onAddToCart }: {
 
       {/* Quick View Modal */}
       {selectedProduct && (
-        <div className="fixed inset-0 bg-black/80 z-[100] flex items-center justify-center p-4">
-          <div className="bg-[#1e2937] max-w-4xl w-full rounded-3xl overflow-hidden">
-            <div className="flex justify-end p-4">
-              <button onClick={closeQuickView} className="text-3xl text-white/70 hover:text-white">✕</button>
+        <div className="fixed inset-0 bg-black/90 z-[100] flex items-center justify-center p-4">
+          <div className="bg-[#1e2937] max-w-5xl w-full rounded-3xl overflow-hidden">
+            <div className="flex justify-end p-4 border-b border-white/10">
+              <button 
+                onClick={closeQuickView} 
+                className="text-4xl text-white/70 hover:text-white transition-colors"
+              >
+                ✕
+              </button>
             </div>
 
-            <div className="grid md:grid-cols-2 gap-8 p-6 md:p-10">
-              {/* Image Gallery */}
-              <div className="relative">
-                <div className="aspect-square rounded-2xl overflow-hidden bg-black">
+            <div className="grid md:grid-cols-2 gap-8 p-8">
+              {/* Images Section */}
+              <div>
+                <div className="aspect-square rounded-2xl overflow-hidden bg-black mb-4">
                   <img
-                    src={selectedProduct.images?.[currentImageIndex] || selectedProduct.image}
+                    src={currentImages[currentImageIndex]}
                     alt={selectedProduct.name}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-contain"
                   />
                 </div>
 
-                {/* Image Navigation */}
-                {(selectedProduct.images && selectedProduct.images.length > 1) && (
+                {/* Navigation Arrows */}
+                {currentImages.length > 1 && (
                   <>
-                    <button onClick={prevImage} className="absolute left-4 top-1/2 -translate-y-1/2 bg-black/60 hover:bg-black/80 text-white w-10 h-10 rounded-full flex items-center justify-center text-2xl">←</button>
-                    <button onClick={nextImage} className="absolute right-4 top-1/2 -translate-y-1/2 bg-black/60 hover:bg-black/80 text-white w-10 h-10 rounded-full flex items-center justify-center text-2xl">→</button>
+                    <button 
+                      onClick={prevImage}
+                      className="absolute left-12 top-1/2 -translate-y-1/2 bg-black/70 hover:bg-black text-white w-12 h-12 rounded-full flex items-center justify-center text-3xl"
+                    >
+                      ←
+                    </button>
+                    <button 
+                      onClick={nextImage}
+                      className="absolute right-12 top-1/2 -translate-y-1/2 bg-black/70 hover:bg-black text-white w-12 h-12 rounded-full flex items-center justify-center text-3xl"
+                    >
+                      →
+                    </button>
                   </>
                 )}
 
                 {/* Thumbnails */}
-                {selectedProduct.images && selectedProduct.images.length > 1 && (
-                  <div className="flex gap-3 mt-4 justify-center">
-                    {selectedProduct.images.map((img, index) => (
+                {currentImages.length > 1 && (
+                  <div className="flex gap-3 justify-center mt-6 flex-wrap">
+                    {currentImages.map((img, index) => (
                       <img
                         key={index}
                         src={img}
                         alt=""
                         onClick={() => setCurrentImageIndex(index)}
-                        className={`w-16 h-16 object-cover rounded-lg cursor-pointer border-2 ${index === currentImageIndex ? 'border-blue-500' : 'border-transparent'}`}
+                        className={`w-20 h-20 object-cover rounded-xl cursor-pointer border-2 transition-all ${index === currentImageIndex ? 'border-blue-500 scale-110' : 'border-transparent'}`}
                       />
                     ))}
                   </div>
                 )}
               </div>
 
-              {/* Product Info */}
+              {/* Details */}
               <div className="flex flex-col">
-                <div className="text-blue-400 text-sm mb-2">{selectedProduct.category}</div>
-                <h2 className="text-3xl font-bold mb-4">{selectedProduct.name}</h2>
-                <p className="text-4xl font-bold text-blue-400 mb-6">DA {selectedProduct.price}</p>
+                <p className="text-blue-400 uppercase tracking-widest text-sm">{selectedProduct.category}</p>
+                <h2 className="text-4xl font-bold mt-2 mb-6">{selectedProduct.name}</h2>
+                <p className="text-5xl font-bold text-blue-400 mb-8">DA {selectedProduct.price}</p>
 
                 {selectedProduct.description && (
-                  <p className="text-gray-300 mb-8 leading-relaxed">{selectedProduct.description}</p>
+                  <p className="text-gray-300 text-lg leading-relaxed mb-10">
+                    {selectedProduct.description}
+                  </p>
                 )}
 
                 <button
                   onClick={() => onAddToCart(selectedProduct)}
-                  className="mt-auto w-full bg-white text-black py-4 rounded-2xl font-semibold text-lg hover:bg-blue-500 hover:text-white transition-all"
+                  className="mt-auto bg-white text-black py-5 rounded-2xl font-semibold text-xl hover:bg-blue-600 hover:text-white transition-all active:scale-[0.98]"
                 >
                   Add to Cart
                 </button>
