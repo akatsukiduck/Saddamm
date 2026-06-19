@@ -7,7 +7,7 @@ interface Product {
   price: number;
   image: string;
   category: string;
-  images?: string[];        // Multiple images
+  images?: string[];
   description?: string;
 }
 
@@ -43,10 +43,17 @@ const Products = ({ searchTerm, onAddToCart }: {
 
   // Get all images (support both old single image and new multiple images)
   const getAllImages = (product: Product) => {
-    if (product.images && product.images.length > 0) {
+    if (Array.isArray(product.images) && product.images.length > 0) {
       return product.images;
     }
-    return [product.image];
+
+    if (typeof product.image === "string") {
+      const parts = product.image.split(",").map(img => img.trim()).filter(Boolean);
+      if (parts.length > 1) return parts;
+      return [product.image];
+    }
+
+    return [];
   };
 
   const currentImages = selectedProduct ? getAllImages(selectedProduct) : [];
@@ -125,7 +132,7 @@ const Products = ({ searchTerm, onAddToCart }: {
 
             <div className="grid md:grid-cols-2 gap-8 p-8">
               {/* Images Section */}
-              <div>
+              <div className="relative">
                 <div className="aspect-square rounded-2xl overflow-hidden bg-black mb-4">
                   <img
                     src={currentImages[currentImageIndex]}
@@ -139,13 +146,13 @@ const Products = ({ searchTerm, onAddToCart }: {
                   <>
                     <button 
                       onClick={prevImage}
-                      className="absolute left-12 top-1/2 -translate-y-1/2 bg-black/70 hover:bg-black text-white w-12 h-12 rounded-full flex items-center justify-center text-3xl"
+                      className="absolute left-2 top-[45%] -translate-y-1/2 bg-black/70 hover:bg-black text-white w-12 h-12 rounded-full flex items-center justify-center text-3xl z-10"
                     >
                       ←
                     </button>
                     <button 
                       onClick={nextImage}
-                      className="absolute right-12 top-1/2 -translate-y-1/2 bg-black/70 hover:bg-black text-white w-12 h-12 rounded-full flex items-center justify-center text-3xl"
+                      className="absolute right-2 top-[45%] -translate-y-1/2 bg-black/70 hover:bg-black text-white w-12 h-12 rounded-full flex items-center justify-center text-3xl z-10"
                     >
                       →
                     </button>
