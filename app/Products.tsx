@@ -17,22 +17,10 @@ const Products = ({ searchTerm, onAddToCart }: {
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [priceRange, setPriceRange] = useState(3000);
 
-  // Load products from localStorage (shared with Admin)
   useEffect(() => {
-    const savedProducts = localStorage.getItem("saddamTechProducts");
-    if (savedProducts) {
-      setProducts(JSON.parse(savedProducts));
-    } else {
-      // Default products (only first time)
-      const defaultProducts: Product[] = [
-        { id: 1, name: "MacBook Pro M4", price: 2499, image: "https://picsum.photos/id/201/600/400", category: "Laptops" },
-        { id: 2, name: "Sony WH-1000XM6", price: 399, image: "https://picsum.photos/id/180/600/400", category: "Audio" },
-        { id: 3, name: "iPhone 17 Pro Max", price: 1299, image: "https://picsum.photos/id/60/600/400", category: "Phones" },
-        { id: 4, name: "LG UltraGear 27\" OLED", price: 899, image: "https://picsum.photos/id/251/600/400", category: "Displays" },
-        { id: 5, name: "DJI Mini 4 Pro Drone", price: 759, image: "https://picsum.photos/id/292/600/400", category: "Drones" },
-      ];
-      setProducts(defaultProducts);
-      localStorage.setItem("saddamTechProducts", JSON.stringify(defaultProducts));
+    const saved = localStorage.getItem("saddamTechProducts");
+    if (saved) {
+      setProducts(JSON.parse(saved));
     }
   }, []);
 

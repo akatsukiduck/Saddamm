@@ -16,40 +16,31 @@ export default function AdminPage() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
+  const ADMIN_PASSWORD = process.env.NEXT_PUBLIC_ADMIN_PASSWORD || "admin123";
+
   const handleLogin = async () => {
     setLoading(true);
     setError("");
 
-    const res = await fetch("/api/admin/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ password }),
-    });
-
-    const data = await res.json();
-
-    if (res.ok) {
+    if (password === ADMIN_PASSWORD) {
       setIsAuthenticated(true);
       loadProducts();
     } else {
-      setError(data.error || "Incorrect password");
+      setError("Incorrect password");
     }
     setLoading(false);
   };
 
-  const loadProducts = async () => {
-    const res = await fetch("/api/admin/products");
-    const data = await res.json();
-    setProducts(data);
+  const loadProducts = () => {
+    const saved = localStorage.getItem("saddamTechProducts");
+    if (saved) {
+      setProducts(JSON.parse(saved));
+    }
   };
 
-  const saveProducts = async (newProducts: Product[]) => {
+  const saveProducts = (newProducts: Product[]) => {
     setProducts(newProducts);
-    await fetch("/api/admin/products", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(newProducts),
-    });
+    localStorage.setItem("saddamTechProducts", JSON.stringify(newProducts));
   };
 
   const addProduct = () => {
@@ -63,8 +54,6 @@ export default function AdminPage() {
 
     const category = prompt("Category:", "Laptops") || "Other";
     const image = prompt("Image URL:", `https://picsum.photos/id/${Math.floor(Math.random() * 400)}/600/400`);
-
-    if (!image) return;
 
     const newProduct: Product = {
       id: Date.now(),
@@ -93,11 +82,8 @@ export default function AdminPage() {
     if (image === null) return;
 
     const updated = products.map(p =>
-      p.id === product.id 
-        ? { ...p, name, price, category, image } 
-        : p
+      p.id === product.id ? { ...p, name, price, category, image } : p
     );
-
     saveProducts(updated);
   };
 
