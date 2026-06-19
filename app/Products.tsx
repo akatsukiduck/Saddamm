@@ -88,7 +88,7 @@ const Products = ({ searchTerm, onAddToCart }: {
           >
             <div className="relative h-56 md:h-64 overflow-hidden">
               <img
-                src={product.image}
+                src={getAllImages(product)[0]}
                 alt={product.name}
                 className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
               />
