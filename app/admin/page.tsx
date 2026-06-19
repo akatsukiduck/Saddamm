@@ -53,7 +53,11 @@ export default function AdminPage() {
     if (isNaN(price)) return;
 
     const category = prompt("Category:", "Laptops") || "Other";
-    const image = prompt("Image URL:", `https://picsum.photos/id/${Math.floor(Math.random() * 400)}/600/400`);
+
+    let image = prompt("Image URL:", `https://picsum.photos/id/${Math.floor(Math.random() * 400)}/600/400`);
+    if (!image) {
+      image = `https://picsum.photos/id/${Math.floor(Math.random() * 400)}/600/400`;
+    }
 
     const newProduct: Product = {
       id: Date.now(),
@@ -78,8 +82,10 @@ export default function AdminPage() {
     const category = prompt("New Category:", product.category);
     if (category === null) return;
 
-    const image = prompt("New Image URL:", product.image);
-    if (image === null) return;
+    let image = prompt("New Image URL:", product.image);
+    if (image === null) {
+      image = product.image;
+    }
 
     const updated = products.map(p =>
       p.id === product.id ? { ...p, name, price, category, image } : p
@@ -173,7 +179,7 @@ export default function AdminPage() {
         </div>
 
         {products.length === 0 && (
-          <p className="text-center text-xl py-20">No products yet. Add some</p>
+          <p className="text-center text-xl py-20">No products yet. Add some!</p>
         )}
       </div>
     </div>
