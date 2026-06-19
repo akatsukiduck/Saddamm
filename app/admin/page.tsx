@@ -16,7 +16,6 @@ export default function AdminPage() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  // Login
   const handleLogin = async () => {
     setLoading(true);
     setError("");
@@ -38,14 +37,12 @@ export default function AdminPage() {
     setLoading(false);
   };
 
-  // Load products
   const loadProducts = async () => {
     const res = await fetch("/api/admin/products");
     const data = await res.json();
     setProducts(data);
   };
 
-  // Save products
   const saveProducts = async (newProducts: Product[]) => {
     setProducts(newProducts);
     await fetch("/api/admin/products", {
@@ -58,10 +55,16 @@ export default function AdminPage() {
   const addProduct = () => {
     const name = prompt("Product Name:");
     if (!name) return;
-    const price = Number(prompt("Price (DA):"));
-    if (!price) return;
+
+    const priceStr = prompt("Price (DA):");
+    if (!priceStr) return;
+    const price = Number(priceStr);
+    if (isNaN(price)) return;
+
     const category = prompt("Category:", "Laptops") || "Other";
     const image = prompt("Image URL:", `https://picsum.photos/id/${Math.floor(Math.random() * 400)}/600/400`);
+
+    if (!image) return;
 
     const newProduct: Product = {
       id: Date.now(),
@@ -77,13 +80,24 @@ export default function AdminPage() {
   const editProduct = (product: Product) => {
     const name = prompt("New Name:", product.name);
     if (name === null) return;
-    const price = Number(prompt("New Price:", product.price));
+
+    const priceStr = prompt("New Price:", product.price.toString());
+    if (priceStr === null) return;
+    const price = Number(priceStr);
+    if (isNaN(price)) return;
+
     const category = prompt("New Category:", product.category);
+    if (category === null) return;
+
     const image = prompt("New Image URL:", product.image);
+    if (image === null) return;
 
     const updated = products.map(p =>
-      p.id === product.id ? { ...p, name, price, category, image } : p
+      p.id === product.id 
+        ? { ...p, name, price, category, image } 
+        : p
     );
+
     saveProducts(updated);
   };
 
@@ -93,7 +107,6 @@ export default function AdminPage() {
     }
   };
 
-  // Login Screen
   if (!isAuthenticated) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#0f172a] text-white px-4">
@@ -123,7 +136,6 @@ export default function AdminPage() {
     );
   }
 
-  // Admin Dashboard
   return (
     <div className="min-h-screen bg-[#0f172a] text-white p-6">
       <div className="max-w-6xl mx-auto">
