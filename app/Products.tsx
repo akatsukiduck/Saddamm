@@ -15,7 +15,6 @@ const Products = ({ searchTerm, onAddToCart }: {
 }) => {
   const [products, setProducts] = useState<Product[]>([]);
   const [selectedCategory, setSelectedCategory] = useState("All");
-  const [priceRange, setPriceRange] = useState(3000);
 
   useEffect(() => {
     const saved = localStorage.getItem("saddamTechProducts");
@@ -26,8 +25,7 @@ const Products = ({ searchTerm, onAddToCart }: {
 
   const filteredProducts = products
     .filter((p) => selectedCategory === "All" || p.category === selectedCategory)
-    .filter((p) => p.name.toLowerCase().includes(searchTerm.toLowerCase()))
-    .filter((p) => p.price <= priceRange);
+    .filter((p) => p.name.toLowerCase().includes(searchTerm.toLowerCase()));
 
   return (
     <div>
@@ -45,19 +43,6 @@ const Products = ({ searchTerm, onAddToCart }: {
               <option key={cat} value={cat}>{cat}</option>
             ))}
           </select>
-
-          <div className="flex items-center gap-3">
-            <span className="text-sm whitespace-nowrap">Up to DA {priceRange}</span>
-            <input
-              type="range"
-              min="100"
-              max="3000"
-              step="50"
-              value={priceRange}
-              onChange={(e) => setPriceRange(Number(e.target.value))}
-              className="w-40 accent-blue-500"
-            />
-          </div>
         </div>
       </div>
 
