@@ -46,7 +46,7 @@ const Nav = ({ cartCount, onCartClick, toggleTheme, isDark, searchTerm, setSearc
             )}
           </button>
 
-          <a href="#contact" className="hidden md:block border-2 border-white rounded-2xl px-5 py-2 text-sm font-medium hover:bg-white hover:text-black transition">
+          <a href="#about" className="hidden md:block border-2 border-white rounded-2xl px-5 py-2 text-sm font-medium hover:bg-white hover:text-black transition">
             Contact
           </a>
 
