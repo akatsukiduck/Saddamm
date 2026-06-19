@@ -173,7 +173,7 @@ export default function AdminPage() {
         </div>
 
         {products.length === 0 && (
-          <p className="text-center text-xl py-20">No products yet. Add some!</p>
+          <p className="text-center text-xl py-20">No products yet. Add some</p>
         )}
       </div>
     </div>
