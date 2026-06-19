@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 
 interface NavProps {
   cartCount: number;
@@ -12,6 +12,19 @@ interface NavProps {
 
 const Nav = ({ cartCount, onCartClick, toggleTheme, isDark, searchTerm, setSearchTerm }: NavProps) => {
   const [menuOpen, setMenuOpen] = useState(false);
+
+  // Scroll to shop when user types
+  useEffect(() => {
+    if (searchTerm.length > 0) {
+      const shopElement = document.getElementById("shop");
+      if (shopElement) {
+        shopElement.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+      }
+    }
+  }, [searchTerm]);
 
   return (
     <div className="w-full px-4 md:px-6 py-4 bg-[#0f172a]/95 backdrop-blur-md sticky top-0 z-50 border-b border-white/10">

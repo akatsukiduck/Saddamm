@@ -1,22 +1,42 @@
 "use client";
 import { useState, useEffect } from "react";
 
-const allProducts = [
-  { id: 1, name: "MacBook Pro M4", price: 2499, image: "https://picsum.photos/id/201/600/400", category: "Laptops" },
-  { id: 2, name: "Sony WH-1000XM6", price: 399, image: "https://picsum.photos/id/180/600/400", category: "Audio" },
-  { id: 3, name: "iPhone 17 Pro Max", price: 1299, image: "https://picsum.photos/id/60/600/400", category: "Phones" },
-  { id: 4, name: "LG UltraGear 27\" OLED", price: 899, image: "https://picsum.photos/id/251/600/400", category: "Displays" },
-  { id: 5, name: "DJI Mini 4 Pro Drone", price: 759, image: "https://picsum.photos/id/292/600/400", category: "Drones" },
-  { id: 6, name: "Keychron Q1 Pro Keyboard", price: 179, image: "https://picsum.photos/id/367/600/400", category: "Accessories" },
-  { id: 7, name: "Samsung Galaxy Watch 7", price: 299, image: "https://picsum.photos/id/201/600/400", category: "Wearables" },
-  { id: 8, name: "ASUS ROG Strix GPU", price: 899, image: "https://picsum.photos/id/180/600/400", category: "Components" },
-];
+interface Product {
+  id: number;
+  name: string;
+  price: number;
+  image: string;
+  category: string;
+}
 
-const Products = ({ searchTerm, onAddToCart }: { searchTerm: string; onAddToCart: (product: any) => void }) => {
+const Products = ({ searchTerm, onAddToCart }: { 
+  searchTerm: string; 
+  onAddToCart: (product: any) => void 
+}) => {
+  const [products, setProducts] = useState<Product[]>([]);
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [priceRange, setPriceRange] = useState(3000);
 
-  const filteredProducts = allProducts
+  // Load products from localStorage (shared with Admin)
+  useEffect(() => {
+    const savedProducts = localStorage.getItem("saddamTechProducts");
+    if (savedProducts) {
+      setProducts(JSON.parse(savedProducts));
+    } else {
+      // Default products (only first time)
+      const defaultProducts: Product[] = [
+        { id: 1, name: "MacBook Pro M4", price: 2499, image: "https://picsum.photos/id/201/600/400", category: "Laptops" },
+        { id: 2, name: "Sony WH-1000XM6", price: 399, image: "https://picsum.photos/id/180/600/400", category: "Audio" },
+        { id: 3, name: "iPhone 17 Pro Max", price: 1299, image: "https://picsum.photos/id/60/600/400", category: "Phones" },
+        { id: 4, name: "LG UltraGear 27\" OLED", price: 899, image: "https://picsum.photos/id/251/600/400", category: "Displays" },
+        { id: 5, name: "DJI Mini 4 Pro Drone", price: 759, image: "https://picsum.photos/id/292/600/400", category: "Drones" },
+      ];
+      setProducts(defaultProducts);
+      localStorage.setItem("saddamTechProducts", JSON.stringify(defaultProducts));
+    }
+  }, []);
+
+  const filteredProducts = products
     .filter((p) => selectedCategory === "All" || p.category === selectedCategory)
     .filter((p) => p.name.toLowerCase().includes(searchTerm.toLowerCase()))
     .filter((p) => p.price <= priceRange);
@@ -30,21 +50,16 @@ const Products = ({ searchTerm, onAddToCart }: { searchTerm: string; onAddToCart
           <select
             value={selectedCategory}
             onChange={(e) => setSelectedCategory(e.target.value)}
-            className="bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-blue-400"
+            className="bg-white/10 border text-black border-white/20 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-blue-400"
           >
             <option value="All">All Categories</option>
-            <option value="Laptops">Laptops</option>
-            <option value="Phones">Phones</option>
-            <option value="Audio">Audio</option>
-            <option value="Displays">Displays</option>
-            <option value="Drones">Drones</option>
-            <option value="Accessories">Accessories</option>
-            <option value="Wearables">Wearables</option>
-            <option value="Components">Components</option>
+            {[...new Set(products.map(p => p.category))].map(cat => (
+              <option key={cat} value={cat}>{cat}</option>
+            ))}
           </select>
 
           <div className="flex items-center gap-3">
-            <span className="text-sm whitespace-nowrap">Up to ${priceRange}</span>
+            <span className="text-sm whitespace-nowrap">Up to DA {priceRange}</span>
             <input
               type="range"
               min="100"
@@ -76,7 +91,7 @@ const Products = ({ searchTerm, onAddToCart }: { searchTerm: string; onAddToCart
               <div className="p-5 md:p-6">
                 <div className="text-xs md:text-sm text-blue-400 mb-1">{product.category}</div>
                 <h2 className="text-lg md:text-2xl font-semibold mb-3 line-clamp-2">{product.name}</h2>
-                <p className="text-2xl md:text-3xl font-bold">${product.price}</p>
+                <p className="text-2xl md:text-3xl font-bold">DA {product.price}</p>
 
                 <button
                   onClick={() => onAddToCart(product)}

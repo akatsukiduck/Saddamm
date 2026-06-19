@@ -53,6 +53,7 @@ const Body = ({
     setCart([]);
     setIsCheckoutOpen(false);
   };
+
   return (
     <>
       {/* HERO */}
@@ -73,7 +74,7 @@ const Body = ({
         </div>
       </div>
 
-      {/* SHOP SECTION */}
+      {/* SHOP SECTION - Using div with id="shop" */}
       <div id="shop" className="px-4 md:px-12 pb-20">
         <Products searchTerm={searchTerm} onAddToCart={addToCart} />
       </div>
