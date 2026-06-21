@@ -20,18 +20,23 @@ const Products = ({ searchTerm, onAddToCart }: {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
-  // Auto load products from JSON file
+  // ✅ HARDCODED PRODUCTS - Everyone can see them
   useEffect(() => {
-    fetch('/data/products.json', { cache: 'no-store' })
-      .then(res => {
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        return res.json();
-      })
-      .then(data => setProducts(data))
-      .catch(err => {
-        console.error("Failed to load products:", err);
-        setProducts([]); 
-      });
+    const hardcodedProducts: Product[] = [
+      // ←←← PASTE THE JSON FROM ADMIN EXPORT HERE
+      // Example:
+      // {
+      //   "id": 1,
+      //   "name": "MacBook Pro M3",
+      //   "price": 450000,
+      //   "image": "https://picsum.photos/id/201/800/600",
+      //   "category": "Laptops",
+      //   "description": "Latest Apple M3 chip",
+      //   "images": ["https://picsum.photos/id/201/800/600", "https://picsum.photos/id/202/800/600"]
+      // }
+    ];
+
+    setProducts(hardcodedProducts);
   }, []);
 
   useEffect(() => {
@@ -107,7 +112,7 @@ const Products = ({ searchTerm, onAddToCart }: {
           >
             <div className="relative h-56 md:h-64 overflow-hidden">
               <img
-                src={getAllImages(product)[0]}
+                src={getAllImages(product)[0] || "https://picsum.photos/400/300"}
                 alt={product.name}
                 className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
               />

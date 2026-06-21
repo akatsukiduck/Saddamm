@@ -11,16 +11,6 @@ interface Product {
   description?: string;
 }
 
-// Server Action to save products
-async function saveProductsToFile(newProducts: Product[]) {
-  const res = await fetch('/api/products', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(newProducts),
-  });
-  return res.ok;
-}
-
 export default function AdminPage() {
   const [products, setProducts] = useState<Product[]>([]);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -30,25 +20,16 @@ export default function AdminPage() {
 
   const ADMIN_PASSWORD = process.env.NEXT_PUBLIC_ADMIN_PASSWORD || "admin123";
 
-  const loadProducts = async () => {
-    try {
-      const res = await fetch('/data/products.json', { 
-        cache: 'no-store',
-        next: { revalidate: 0 }
-      });
-      if (!res.ok) throw new Error();
-      const data = await res.json();
-      setProducts(data);
-    } catch (e) {
-      console.error("No products file found");
-      setProducts([]);
+  const loadProducts = () => {
+    const saved = localStorage.getItem("saddamTechProducts");
+    if (saved) {
+      setProducts(JSON.parse(saved));
     }
   };
 
-  const saveProducts = async (newProducts: Product[]) => {
+  const saveProducts = (newProducts: Product[]) => {
     setProducts(newProducts);
-    const success = await saveProductsToFile(newProducts);
-    if (!success) alert("⚠️ Failed to save to file");
+    localStorage.setItem("saddamTechProducts", JSON.stringify(newProducts));
   };
 
   const handleLogin = () => {
@@ -63,7 +44,7 @@ export default function AdminPage() {
     setLoading(false);
   };
 
-  const addProduct = async () => {
+  const addProduct = () => {
     const name = prompt("Product Name:");
     if (!name) return;
 
@@ -91,11 +72,11 @@ export default function AdminPage() {
       description: description || undefined,
     };
 
-    await saveProducts([...products, newProduct]);
+    saveProducts([...products, newProduct]);
     alert("✅ Product added successfully!");
   };
 
-  const editProduct = async (product: Product) => {
+  const editProduct = (product: Product) => {
     const name = prompt("New Name:", product.name);
     if (name === null) return;
 
@@ -116,16 +97,35 @@ export default function AdminPage() {
     const description = prompt("Description:", product.description || "");
 
     const updated = products.map(p =>
-      p.id === product.id ? { ...p, name, price, category, image: mainImage, images: images.length > 0 ? images : undefined, description: description || undefined } : p
+      p.id === product.id ? { 
+        ...p, 
+        name, 
+        price, 
+        category, 
+        image: mainImage, 
+        images: images.length > 0 ? images : undefined,
+        description: description || undefined 
+      } : p
     );
 
-    await saveProducts(updated);
+    saveProducts(updated);
   };
 
-  const deleteProduct = async (id: number) => {
+  const deleteProduct = (id: number) => {
     if (confirm("Delete this product permanently?")) {
-      await saveProducts(products.filter(p => p.id !== id));
+      saveProducts(products.filter(p => p.id !== id));
     }
+  };
+
+  // Export for Website
+  const exportProducts = () => {
+    if (products.length === 0) {
+      alert("No products to export!");
+      return;
+    }
+    const dataStr = JSON.stringify(products, null, 2);
+    navigator.clipboard.writeText(dataStr);
+    alert("✅ Products copied to clipboard!\nPaste them into Products.tsx");
   };
 
   if (!isAuthenticated) {
@@ -141,7 +141,11 @@ export default function AdminPage() {
             className="w-full px-5 py-3 bg-white/10 border border-white/30 rounded-2xl mb-4 focus:outline-none focus:border-blue-500"
             onKeyDown={(e) => e.key === "Enter" && handleLogin()}
           />
-          <button onClick={handleLogin} disabled={loading} className="w-full bg-blue-600 hover:bg-blue-700 py-3 rounded-2xl font-semibold disabled:opacity-50">
+          <button
+            onClick={handleLogin}
+            disabled={loading}
+            className="w-full bg-blue-600 hover:bg-blue-700 py-3 rounded-2xl font-semibold disabled:opacity-50"
+          >
             {loading ? "Checking..." : "Login"}
           </button>
           {error && <p className="text-red-500 text-center mt-4">{error}</p>}
@@ -157,6 +161,7 @@ export default function AdminPage() {
           <h1 className="text-4xl font-bold">Admin Dashboard - Saddam Tech</h1>
           <div className="flex gap-3 flex-wrap">
             <button onClick={addProduct} className="bg-green-600 hover:bg-green-700 px-6 py-3 rounded-2xl">+ Add New Product</button>
+            <button onClick={exportProducts} className="bg-blue-600 hover:bg-blue-700 px-6 py-3 rounded-2xl">📤 Export for Website</button>
             <button onClick={() => setIsAuthenticated(false)} className="px-6 py-3 bg-red-600 hover:bg-red-700 rounded-2xl">Logout</button>
           </div>
         </div>
