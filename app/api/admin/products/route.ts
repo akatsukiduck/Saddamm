@@ -6,10 +6,9 @@ export async function POST(request: NextRequest) {
   try {
     const products = await request.json();
     
-    // Correct path for public folder
     const filePath = path.join(process.cwd(), 'public', 'data', 'products.json');
     
-    // Make sure directory exists
+    // Create directory if it doesn't exist
     const dir = path.dirname(filePath);
     if (!fs.existsSync(dir)) {
       fs.mkdirSync(dir, { recursive: true });
@@ -19,7 +18,7 @@ export async function POST(request: NextRequest) {
     
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error("Save error:", error);
-    return NextResponse.json({ success: false }, { status: 500 });
+    console.error("Error saving products:", error);
+    return NextResponse.json({ success: false, error: (error as Error).message }, { status: 500 });
   }
 }

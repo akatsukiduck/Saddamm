@@ -32,7 +32,10 @@ export default function AdminPage() {
 
   const loadProducts = async () => {
     try {
-      const res = await fetch('/data/products.json');
+      const res = await fetch('/data/products.json', { 
+        cache: 'no-store',
+        next: { revalidate: 0 }
+      });
       if (!res.ok) throw new Error();
       const data = await res.json();
       setProducts(data);

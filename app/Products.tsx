@@ -22,15 +22,15 @@ const Products = ({ searchTerm, onAddToCart }: {
 
   // Auto load products from JSON file
   useEffect(() => {
-    fetch('/data/products.json')
+    fetch('/data/products.json', { cache: 'no-store' })
       .then(res => {
-        if (!res.ok) throw new Error('Failed');
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
         return res.json();
       })
       .then(data => setProducts(data))
       .catch(err => {
         console.error("Failed to load products:", err);
-        setProducts([]); // fallback
+        setProducts([]); 
       });
   }, []);
 
