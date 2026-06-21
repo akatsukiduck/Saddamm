@@ -21,10 +21,22 @@ const Products = ({ searchTerm, onAddToCart }: {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
   useEffect(() => {
-    const saved = localStorage.getItem("saddamTechProducts");
-    if (saved) {
-      setProducts(JSON.parse(saved));
-    }
+    const hardcodedProducts: Product[] = [
+      {
+        id: 1,
+        name: "MacBook Pro M3",
+        price: 450000,
+        image: "https://picsum.photos/id/201/800/600",
+        category: "Laptops",
+        description: "Latest MacBook with M3 chip...",
+        images: ["https://picsum.photos/id/201/800/600", "https://picsum.photos/id/202/800/600"]
+      },
+      // Add more products here...
+    ];
+
+    setProducts(hardcodedProducts);
+    // Optionally still save to localStorage for admin
+    localStorage.setItem("saddamTechProducts", JSON.stringify(hardcodedProducts));
   }, []);
 
   useEffect(() => {
