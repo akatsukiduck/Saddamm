@@ -21,30 +21,19 @@ const Products = ({ searchTerm, onAddToCart }: {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
   // ✅ HARDCODED PRODUCTS - Everyone can see them
+    // ✅ HARDCODED PRODUCTS - Everyone can see them
   useEffect(() => {
     const hardcodedProducts: Product[] = [
-      [
-        {
-          "id": 1782038185804,
-          "name": "saddam phone",
-          "price": 1,
-          "image": "https://picsum.photos/id/68/800/600",
-          "category": "Phones",
-          "images": [
-            "https://picsum.photos/id/201/800/600",
-            "https://picsum.photos/id/202/800/600"
-          ],
-          "description": "Pretty good phone with some fautures that helps old mans"
-        },
-        {
-          "id": 1782040459795,
-          "name": "Saddam phone",
-          "price": 1,
-          "image": "https://picsum.photos/id/87/800/600",
-          "category": "Laptops",
-          "description": "Pretyy"
-        }
-      ]
+      {
+        id: 1782038185804,
+        name: "saddam phone",
+        price: 85000,
+        image: "https://your-image-url-here.com/image.jpg",   // ← Change this
+        category: "Phones",
+        description: "Good phone",
+        images: ["https://your-image-url-here.com/image.jpg"]
+      }
+      // Add more products here, separated by commas
     ];
 
     setProducts(hardcodedProducts);
