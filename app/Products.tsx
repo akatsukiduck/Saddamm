@@ -23,9 +23,15 @@ const Products = ({ searchTerm, onAddToCart }: {
   // Auto load products from JSON file
   useEffect(() => {
     fetch('/data/products.json')
-      .then(res => res.json())
+      .then(res => {
+        if (!res.ok) throw new Error('Failed');
+        return res.json();
+      })
       .then(data => setProducts(data))
-      .catch(err => console.error("Failed to load products:", err));
+      .catch(err => {
+        console.error("Failed to load products:", err);
+        setProducts([]); // fallback
+      });
   }, []);
 
   useEffect(() => {

@@ -33,10 +33,12 @@ export default function AdminPage() {
   const loadProducts = async () => {
     try {
       const res = await fetch('/data/products.json');
+      if (!res.ok) throw new Error();
       const data = await res.json();
       setProducts(data);
     } catch (e) {
       console.error("No products file found");
+      setProducts([]);
     }
   };
 
