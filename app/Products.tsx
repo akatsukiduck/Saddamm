@@ -23,17 +23,28 @@ const Products = ({ searchTerm, onAddToCart }: {
   // ✅ HARDCODED PRODUCTS - Everyone can see them
   useEffect(() => {
     const hardcodedProducts: Product[] = [
-      // ←←← PASTE THE JSON FROM ADMIN EXPORT HERE
-      // Example:
-      // {
-      //   "id": 1,
-      //   "name": "MacBook Pro M3",
-      //   "price": 450000,
-      //   "image": "https://picsum.photos/id/201/800/600",
-      //   "category": "Laptops",
-      //   "description": "Latest Apple M3 chip",
-      //   "images": ["https://picsum.photos/id/201/800/600", "https://picsum.photos/id/202/800/600"]
-      // }
+      [
+        {
+          "id": 1782038185804,
+          "name": "saddam phone",
+          "price": 1,
+          "image": "https://picsum.photos/id/68/800/600",
+          "category": "Phones",
+          "images": [
+            "https://picsum.photos/id/201/800/600",
+            "https://picsum.photos/id/202/800/600"
+          ],
+          "description": "Pretty good phone with some fautures that helps old mans"
+        },
+        {
+          "id": 1782040459795,
+          "name": "Saddam phone",
+          "price": 1,
+          "image": "https://picsum.photos/id/87/800/600",
+          "category": "Laptops",
+          "description": "Pretyy"
+        }
+      ]
     ];
 
     setProducts(hardcodedProducts);
