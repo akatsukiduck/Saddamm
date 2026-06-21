@@ -1,0 +1,14 @@
+[
+  {
+    "id": 1,
+    "name": "MacBook Pro M3",
+    "price": 450000,
+    "image": "https://picsum.photos/id/201/800/600",
+    "category": "Laptops",
+    "description": "Latest Apple M3 chip, 16GB RAM",
+    "images": [
+      "https://picsum.photos/id/201/800/600",
+      "https://picsum.photos/id/202/800/600"
+    ]
+  }
+]

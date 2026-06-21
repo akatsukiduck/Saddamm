@@ -20,23 +20,12 @@ const Products = ({ searchTerm, onAddToCart }: {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
+  // Auto load products from JSON file
   useEffect(() => {
-    const hardcodedProducts: Product[] = [
-      {
-        id: 1,
-        name: "MacBook Pro M3",
-        price: 450000,
-        image: "https://picsum.photos/id/201/800/600",
-        category: "Laptops",
-        description: "Latest MacBook with M3 chip...",
-        images: ["https://picsum.photos/id/201/800/600", "https://picsum.photos/id/202/800/600"]
-      },
-      // Add more products here...
-    ];
-
-    setProducts(hardcodedProducts);
-    // Optionally still save to localStorage for admin
-    localStorage.setItem("saddamTechProducts", JSON.stringify(hardcodedProducts));
+    fetch('/data/products.json')
+      .then(res => res.json())
+      .then(data => setProducts(data))
+      .catch(err => console.error("Failed to load products:", err));
   }, []);
 
   useEffect(() => {
@@ -45,10 +34,7 @@ const Products = ({ searchTerm, onAddToCart }: {
     } else {
       document.body.style.overflow = "";
     }
-
-    return () => {
-      document.body.style.overflow = "";
-    };
+    return () => { document.body.style.overflow = ""; };
   }, [selectedProduct]);
 
   const filteredProducts = products
@@ -69,13 +55,10 @@ const Products = ({ searchTerm, onAddToCart }: {
     if (Array.isArray(product.images) && product.images.length > 0) {
       return product.images;
     }
-
     if (typeof product.image === "string") {
       const parts = product.image.split(",").map(img => img.trim()).filter(Boolean);
-      if (parts.length > 1) return parts;
-      return [product.image];
+      return parts.length > 1 ? parts : [product.image];
     }
-
     return [];
   };
 
@@ -154,7 +137,6 @@ const Products = ({ searchTerm, onAddToCart }: {
             </div>
 
             <div className="grid md:grid-cols-2 gap-8 p-8">
-              {/* Images Section */}
               <div className="relative">
                 <div className="aspect-square rounded-2xl overflow-hidden bg-black mb-4">
                   <img
@@ -164,25 +146,13 @@ const Products = ({ searchTerm, onAddToCart }: {
                   />
                 </div>
 
-                {/* Navigation Arrows */}
                 {currentImages.length > 1 && (
                   <>
-                    <button 
-                      onClick={prevImage}
-                      className="absolute left-2 top-[45%] -translate-y-1/2 bg-black/70 hover:bg-black text-white w-12 h-12 rounded-full flex items-center justify-center text-3xl z-10"
-                    >
-                      ←
-                    </button>
-                    <button 
-                      onClick={nextImage}
-                      className="absolute right-2 top-[45%] -translate-y-1/2 bg-black/70 hover:bg-black text-white w-12 h-12 rounded-full flex items-center justify-center text-3xl z-10"
-                    >
-                      →
-                    </button>
+                    <button onClick={prevImage} className="absolute left-2 top-[45%] -translate-y-1/2 bg-black/70 hover:bg-black text-white w-12 h-12 rounded-full flex items-center justify-center text-3xl z-10">←</button>
+                    <button onClick={nextImage} className="absolute right-2 top-[45%] -translate-y-1/2 bg-black/70 hover:bg-black text-white w-12 h-12 rounded-full flex items-center justify-center text-3xl z-10">→</button>
                   </>
                 )}
 
-                {/* Thumbnails */}
                 {currentImages.length > 1 && (
                   <div className="flex gap-3 justify-center mt-6 flex-wrap">
                     {currentImages.map((img, index) => (
@@ -198,7 +168,6 @@ const Products = ({ searchTerm, onAddToCart }: {
                 )}
               </div>
 
-              {/* Details */}
               <div className="flex flex-col">
                 <p className="text-blue-400 uppercase tracking-widest text-sm">{selectedProduct.category}</p>
                 <h2 className="text-4xl font-bold mt-2 mb-6">{selectedProduct.name}</h2>
